@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Checkout System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; position: relative; }
+        .container { display: flex; flex-direction: row; max-width: 1200px; width: 100%; height: 100%; padding: 10px; box-sizing: border-box; }
+        .input-section { flex: 1; margin-right: 10px; display: flex; flex-direction: column; }
+        .input-section h1 { position: absolute; top: 10px; left: 10px; margin: 0; }
+        .input-section .tool-inputs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 50px; }
+        .input-section label, .input-section input, .input-section button { margin: 5px 0; }
+        .input-section input { width: 100%; max-width: 150px; }
+        .input-section button { width: auto; margin-top: 10px; }
+        .log-section { flex: 0 0 300px; border: 1px solid #ccc; padding: 10px; max-height: 500px; overflow-y: auto; }
+        .output-section { border: 1px solid #ccc; padding: 10px; max-height: 500px; overflow-y: auto; margin-bottom: 10px; }
+        .tool-entry { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+        .checkin-button { margin-left: 5px; }
+        .buttons { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h1>Mustang 60</h1>
+            <div class="tool-inputs">
+                <div>
+                    <label for="student-id">Student ID:</label>
+                    <input type="text" id="student-id" name="student-id">
+                </div>
+                <div>
+                    <label for="tool-id1">Tool ID 1:</label>
+                    <input type="text" id="tool-id1" name="tool-id">
+                </div>
+                <div>
+                    <label for="tool-id2">Tool ID 2:</label>
+                    <input type="text" id="tool-id2" name="tool-id">
+                </div>
+                <div>
+                    <label for="tool-id3">Tool ID 3:</label>
+                    <input type="text" id="tool-id3" name="tool-id">
+                </div>
+                <div>
+                    <label for="tool-id4">Tool ID 4:</label>
+                    <input type="text" id="tool-id4" name="tool-id">
+                </div>
+                <div>
+                    <label for="tool-id5">Tool ID 5:</label>
+                    <input type="text" id="tool-id5" name="tool-id">
+                </div>
+                <div>
+                    <label for="tool-id6">Tool ID 6:</label>
+                    <input type="text" id="tool-id6" name="tool-id">
+                </div>
+            </div>
+            <button onclick="checkoutTools()">Check Out</button>
+            
+            <div class="buttons">
+                <button onclick="exportLogs()">Export Log</button>
+                <button onclick="clearLogs()">Clear Log</button>
+            </div>
+            
+            <div class="output-section" id="output-section">
+                <!-- Dynamic content for checked out tools will go here -->
+            </div>
+        </div>
+        
+        <div class="log-section" id="log-section">
+            <!-- Dynamic content for logs will go here -->
+        </div>
+    </div>
+    <script>
+        let checkoutData = JSON.parse(localStorage.getItem('checkoutData')) || {};
+
+        function checkoutTools() {
+            const studentId = document.getElementById('student-id').value;
+            const toolIds = [];
+            for (let i = 1; i <= 6; i++) {
+                const toolId = document.getElementById('tool-id' + i).value;
+                if (toolId) toolIds.push(toolId);
+            }
+
+            if (!checkoutData[studentId]) {
+                checkoutData[studentId] = [];
+            }
+            
+            toolIds.forEach(toolId => {
+                const currentTime = new Date().toLocaleString();
+                checkoutData[studentId].push({ toolId: toolId, timeOut: currentTime, timeIn: null });
+                logAction(`Student ${studentId} checked out tool ${toolId} at ${currentTime}`);
+            });
+
+            updateOutputSection();
+            saveData();
+            clearInputFields();
+        }
+
+        function clearInputFields() {
+            document.getElementById('student-id').value = '';
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('tool-id' + i).value = '';
+            }
+        }
+
+        function logAction(action) {
+            const logSection = document.getElementById('log-section');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.textContent = action;
+            logSection.appendChild(logEntry);
+        }
+
+        function updateOutputSection() {
+            const outputSection = document.getElementById('output-section');
+            outputSection.innerHTML = '';
+            for (const studentId in checkoutData) {
+                const studentTools = checkoutData[studentId];
+                const studentSection = document.createElement('div');
+                studentSection.innerHTML = `<h3>Student ID: ${studentId}</h3>`;
+                studentTools.forEach(tool => {
+                    const toolEntry = document.createElement('div');
+                    toolEntry.className = 'tool-entry';
+                    toolEntry.innerHTML = `Tool ID: ${tool.toolId}, Checked Out: ${tool.timeOut}, Checked In: ${tool.timeIn ? tool.timeIn : 'Not Returned'}`;
+                    
+                    if (!tool.timeIn) {
+                        const checkinButton = document.createElement('button');
+                        checkinButton.className = 'checkin-button';
+                        checkinButton.textContent = 'Check In';
+                        checkinButton.setAttribute('data-student-id', studentId);
+                        checkinButton.setAttribute('data-tool-id', tool.toolId);
+                        checkinButton.onclick = checkInTool;
+                        toolEntry.appendChild(checkinButton);
+                    }
+
+                    studentSection.appendChild(toolEntry);
+                });
+                outputSection.appendChild(studentSection);
+            }
+        }
+
+        function checkInTool(event) {
+            const studentId = event.target.getAttribute('data-student-id');
+            const toolId = event.target.getAttribute('data-tool-id');
+            const currentTime = new Date().toLocaleString();
+            checkoutData[studentId] = checkoutData[studentId].map(tool => {
+                if (tool.toolId === toolId && !tool.timeIn) {
+                    tool.timeIn = currentTime;
+                    logAction(`Student ${studentId} checked in tool ${toolId} at ${currentTime}`);
+                }
+                return tool;
+            });
+
+            updateOutputSection();
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+        }
+
+        function exportLogs() {
+            const logContent = document.getElementById('log-section').innerText;
+            const blob = new Blob([logContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'logs.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function clearLogs() {
+            checkoutData = {};
+            localStorage.removeItem('checkoutData');
+            document.getElementById('output-section').innerHTML = '';
+            document.getElementById('log-section').innerHTML = '';
+        }
+
+        // Load data from localStorage on page load
+        window.onload = function() {
+            updateOutputSection();
+            // Load logs into the log-section
+            const logs = JSON.parse(localStorage.getItem('logs')) || [];
+            logs.forEach(log => logAction(log));
+        };
+    </script>
+</body>
+</html>
