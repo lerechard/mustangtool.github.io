@@ -5,49 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tool Checkout System</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
         body { 
-            font-family: 'Source Sans Pro', Arial, sans-serif; 
+            font-family: 'Montserrat', Arial, sans-serif; 
             margin: 0; 
             padding: 0; 
+            background-color: #434343; 
+            color: #ffffff; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            height: 100vh; 
-            background-color: #f5f5f5; 
+            min-height: 100vh; 
         }
 
         .container { 
             display: flex; 
-            flex-direction: row; 
+            flex-direction: column; 
             max-width: 1200px; 
             width: 100%; 
-            height: 100%; 
             padding: 20px; 
             box-sizing: border-box; 
             background-color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             border-radius: 8px;
+            color: #00274C;
         }
 
         .input-section { 
-            flex: 1; 
-            margin-right: 20px; 
+            margin-bottom: 20px; 
             display: flex; 
             flex-direction: column; 
             background-color: #154734; 
-            color: #fff; 
-            padding: 20px;
+            color: #ffffff; 
+            padding: 30px;
             border-radius: 8px;
         }
 
         .input-section h1 { 
-            font-family: 'Source Sans Pro', sans-serif; 
-            font-size: 32px; 
-            color: #BD8B13; 
+            font-size: 28px; 
             margin: 0 0 20px 0; 
             font-weight: 700;
+            color: #F7C948;
         }
 
         .tool-inputs { 
@@ -64,17 +63,17 @@
 
         .input-section label { 
             font-weight: 600; 
-            color: #BD8B13; 
+            color: #F7C948; 
             margin-bottom: 5px;
         }
 
         .input-section input { 
-            padding: 8px; 
+            padding: 10px; 
             border: 1px solid #ccc; 
             border-radius: 4px; 
-            font-family: 'Source Sans Pro', sans-serif; 
-            background-color: #fff; 
-            color: #000;
+            background-color: #ffffff; 
+            color: #00274C;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .action-buttons { 
@@ -85,10 +84,10 @@
         }
 
         .input-section button, .action-buttons button { 
-            background-color: #BD8B13; 
-            color: #fff; 
+            background-color: #F7C948; 
+            color: #00274C; 
             border: none; 
-            padding: 10px 20px; 
+            padding: 12px 20px; 
             border-radius: 4px; 
             cursor: pointer; 
             font-weight: 600; 
@@ -97,39 +96,40 @@
         }
 
         .input-section button:hover, .action-buttons button:hover { 
-            background-color: #A67911; 
+            background-color: #E8B83E; 
         }
 
-        .output-section, .log-section { 
-            border: 2px solid #BD8B13; 
-            padding: 20px; 
-            max-height: 500px; 
-            overflow-y: auto; 
-            border-radius: 4px; 
-            background-color: #fff;
+        .log-section { 
             margin-top: 20px;
-            color: #154734;
+            border: 2px solid #F7C948; 
+            border-radius: 4px; 
+            background-color: #ffffff;
+            padding: 20px;
+            color: #00274C;
             font-weight: 600;
-        }
-
-        .student-section { 
-            margin-bottom: 20px; 
+            overflow-y: auto;
         }
 
         .student-section h3 { 
-            margin-bottom: 10px; 
-            color: #BD8B13;
+            margin: 0; 
+            padding: 10px; 
+            background-color: #154734; 
+            color: #F7C948; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-radius: 4px;
         }
 
         .tool-entry { 
-            display: flex; 
             justify-content: space-between; 
             align-items: center; 
             padding: 10px; 
             background-color: #E9F3EE; 
             border-radius: 4px; 
             margin-bottom: 10px;
-            color: #154734;
+            color: #00274C;
         }
 
         .tool-details { 
@@ -166,10 +166,30 @@
         .log-entry:last-child { 
             border-bottom: none; 
         }
+
+        #tool-list #back-button, #tool-list #checkin-all-button {
+            background-color: #154734;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        #tool-list #back-button:hover, #tool-list #checkin-all-button:hover {
+            background-color: #13322E;
+        }
+
+        #student-tools {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="student-list">
         <div class="input-section">
             <h1>Mustang 60 Tool Checkout</h1>
             <div class="tool-inputs">
@@ -217,6 +237,16 @@
             <!-- Dynamic content for logs will go here -->
         </div>
     </div>
+
+    <div class="container" id="tool-list" style="display: none;">
+        <button id="back-button" onclick="showStudentList()">Back</button>
+        <h2 id="student-header"></h2>
+        <div id="student-tools">
+            <!-- Tools will be dynamically added here -->
+        </div>
+        <button id="checkin-all-button" onclick="checkInAllTools()">Check In All</button>
+    </div>
+
     <script>
         let checkoutData = JSON.parse(localStorage.getItem('checkoutData')) || {};
         let logs = JSON.parse(localStorage.getItem('logs')) || [];
@@ -239,113 +269,119 @@
                 return;
             }
 
-            // Handle duplicate tool IDs by appending numbers
-            const uniqueToolIds = [];
-            const toolIdCounts = {};
-
-            toolIds.forEach(toolId => {
-                if (toolIdCounts[toolId]) {
-                    toolIdCounts[toolId]++;
-                    uniqueToolIds.push(`${toolId}-${toolIdCounts[toolId]}`);
-                } else {
-                    toolIdCounts[toolId] = 1;
-                    uniqueToolIds.push(toolId);
-                }
-            });
-
+            // Handle duplicate entries
             if (!checkoutData[studentId]) {
                 checkoutData[studentId] = [];
             }
-            
-            uniqueToolIds.forEach(toolId => {
-                const currentTime = new Date().toLocaleString();
-                checkoutData[studentId].push({ toolId: toolId, timeOut: currentTime, timeIn: null });
-                const logMessage = `Student ${studentId} checked out tool ${toolId} at ${currentTime}`;
-                logAction(logMessage);
+
+            toolIds.forEach(toolId => {
+                if (!checkoutData[studentId].includes(toolId)) {
+                    checkoutData[studentId].push(toolId);
+                }
             });
 
-            updateOutputSection();
-            saveData();
-            clearInputFields();
-        }
-
-        function clearInputFields() {
-            document.getElementById('student-id').value = '';
-            for (let i = 1; i <= 6; i++) {
-                document.getElementById('tool-id' + i).value = '';
-            }
-        }
-
-        function logAction(message) {
-            logs.push(message);
-            renderLogs();
-            localStorage.setItem('logs', JSON.stringify(logs));
-        }
-
-        function renderLogs() {
-            const logSection = document.getElementById('log-section');
-            logSection.innerHTML = '';
-
-            logs.forEach(log => {
-                const logEntry = document.createElement('div');
-                logEntry.className = 'log-entry';
-                logEntry.textContent = log;
-                logSection.appendChild(logEntry);
-            });
-        }
-
-        function saveData() {
+            logs.push(`Student ID ${studentId} checked out tools: ${toolIds.join(', ')}`);
             localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+            localStorage.setItem('logs', JSON.stringify(logs));
+
+            renderCheckedOutTools();
+            renderLogs();
+            clearInputs();
         }
 
-        function updateOutputSection() {
+        function renderCheckedOutTools() {
             const outputSection = document.getElementById('output-section');
             outputSection.innerHTML = '';
 
             Object.keys(checkoutData).forEach(studentId => {
                 const studentSection = document.createElement('div');
                 studentSection.className = 'student-section';
-
                 const studentHeader = document.createElement('h3');
-                studentHeader.textContent = `Student ID: ${studentId}`;
-                studentSection.appendChild(studentHeader);
+                studentHeader.textContent = studentId;
 
-                checkoutData[studentId].forEach(entry => {
-                    if (!entry.timeIn) {
-                        const toolEntry = document.createElement('div');
-                        toolEntry.className = 'tool-entry';
-
-                        const toolDetails = document.createElement('div');
-                        toolDetails.className = 'tool-details';
-                        toolDetails.innerHTML = `
-                            <span>Tool ID: ${entry.toolId}</span>
-                            <span>Checked Out: ${entry.timeOut}</span>
-                        `;
-
-                        const checkinButton = document.createElement('button');
-                        checkinButton.className = 'checkin-button';
-                        checkinButton.textContent = 'Check In';
-                        checkinButton.onclick = function() { checkInTool(studentId, entry.toolId); };
-
-                        toolEntry.appendChild(toolDetails);
-                        toolEntry.appendChild(checkinButton);
-                        studentSection.appendChild(toolEntry);
-                    }
+                studentHeader.addEventListener('click', function () {
+                    showToolList(studentId);
                 });
 
+                studentSection.appendChild(studentHeader);
                 outputSection.appendChild(studentSection);
             });
         }
 
+        function showToolList(studentId) {
+            document.getElementById('student-list').style.display = 'none';
+            document.getElementById('tool-list').style.display = 'block';
+            document.getElementById('student-header').textContent = `Tools checked out by ${studentId}`;
+
+            const studentToolsContainer = document.getElementById('student-tools');
+            studentToolsContainer.innerHTML = '';
+
+            checkoutData[studentId].forEach(toolId => {
+                const toolEntry = document.createElement('div');
+                toolEntry.className = 'tool-entry';
+
+                const toolDetails = document.createElement('div');
+                toolDetails.className = 'tool-details';
+                toolDetails.textContent = `Tool ID: ${toolId}`;
+
+                const checkinButton = document.createElement('button');
+                checkinButton.className = 'checkin-button';
+                checkinButton.textContent = 'Check In';
+                checkinButton.addEventListener('click', () => checkInTool(studentId, toolId));
+
+                toolEntry.appendChild(toolDetails);
+                toolEntry.appendChild(checkinButton);
+                studentToolsContainer.appendChild(toolEntry);
+            });
+        }
+
+        function showStudentList() {
+            document.getElementById('student-list').style.display = 'flex';
+            document.getElementById('tool-list').style.display = 'none';
+        }
+
         function checkInTool(studentId, toolId) {
-            const studentTools = checkoutData[studentId];
-            const toolEntry = studentTools.find(entry => entry.toolId === toolId && !entry.timeIn);
-            if (toolEntry) {
-                toolEntry.timeIn = new Date().toLocaleString();
-                const logMessage = `Student ${studentId} checked in tool ${toolId} at ${toolEntry.timeIn}`;
-                logAction(logMessage);
-                saveData();
-                updateOutputSection();
+            checkoutData[studentId] = checkoutData[studentId].filter(id => id !== toolId);
+
+            if (checkoutData[studentId].length === 0) {
+                delete checkoutData[studentId];
+            }
+
+            logs.push(`Student ID ${studentId} checked in tool: ${toolId}`);
+            localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+            localStorage.setItem('logs', JSON.stringify(logs));
+
+            renderCheckedOutTools();
+            renderLogs();
+            showToolList(studentId);
+        }
+
+        function checkInAllTools() {
+            const studentId = document.getElementById('student-header').textContent.split(' ')[3]; // Extract studentId from the header
+            checkoutData[studentId].forEach(toolId => checkInTool(studentId, toolId));
+        }
+
+        function renderLogs() {
+            const logSection = document.getElementById('log-section');
+            logSection.innerHTML = logs.map(log => `<div class="log-entry">${log}</div>`).join('');
+        }
+
+        function clearLogs() {
+            if (confirm('Are you sure you want to clear the logs?')) {
+                logs = [];
+                localStorage.removeItem('logs');
+                renderLogs();
+            }
+        }
+
+        function clearEverything() {
+            if (confirm('Are you sure you want to clear everything? This will remove all data.')) {
+                checkoutData = {};
+                logs = [];
+                localStorage.removeItem('checkoutData');
+                localStorage.removeItem('logs');
+                renderCheckedOutTools();
+                renderLogs();
             }
         }
 
@@ -355,33 +391,24 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'tool_checkout_log.txt';
+            a.download = 'logs.txt';
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
-        function clearLogs() {
-            if (confirm('Are you sure you want to clear the log?')) {
-                logs = [];
-                localStorage.setItem('logs', JSON.stringify(logs));
-                renderLogs();
+        function clearInputs() {
+            document.getElementById('student-id').value = '';
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('tool-id' + i).value = '';
             }
         }
 
-        function clearEverything() {
-            if (confirm('Are you sure you want to clear everything? This will reset all data.')) {
-                checkoutData = {};
-                logs = [];
-                localStorage.removeItem('checkoutData');
-                localStorage.removeItem('logs');
-                updateOutputSection();
-                renderLogs();
-            }
-        }
-
-        // Initialize the app
-        updateOutputSection();
-        renderLogs();
+        window.onload = () => {
+            renderCheckedOutTools();
+            renderLogs();
+        };
     </script>
 </body>
 </html>
