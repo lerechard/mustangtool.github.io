@@ -110,17 +110,26 @@
             overflow-y: auto;
         }
 
-        .student-section h3 { 
-            margin: 0; 
-            padding: 10px; 
-            background-color: #154734; 
-            color: #F7C948; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            border-radius: 4px;
-        }
+        .student-section h3 {
+    margin: 10px;
+    padding: 10px;
+    background-color: #154734;
+    color: #F7C948;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #F7C948; /* Makes the button border more pronounced */
+    border-radius: 10px; 
+    text-align: center; /* Center the text */
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.student-section h3:hover {
+    background-color: #13322E; /* Slightly darker green on hover */
+    color: #ffffff; /* White text on hover */
+}
 
         .tool-entry { 
             justify-content: space-between; 
@@ -244,7 +253,7 @@
         <div id="student-tools">
             <!-- Tools will be dynamically added here -->
         </div>
-        <button id="checkin-all-button" onclick="checkInAllTools()">Check In All</button>
+      <!--  <button id="checkin-all-button" onclick="checkInAllTools()">Check In All</button> -->
     </div>
 
     <script>
@@ -356,10 +365,14 @@
             showToolList(studentId);
         }
 
-        function checkInAllTools() {
-            const studentId = document.getElementById('student-header').textContent.split(' ')[3]; // Extract studentId from the header
-            checkoutData[studentId].forEach(toolId => checkInTool(studentId, toolId));
-        }
+   //     function checkInAllTools(studentId) {
+   // if (checkoutData[studentId]) {
+   //     delete checkoutData[studentId]; // Remove all tools for the student
+   //     localStorage.setItem('checkoutData', JSON.stringify(checkoutData)); // Update the storage
+   //     renderCheckoutData(); // Re-render the tool data
+   //     addLogEntry(`Student ${studentId} checked in all tools.`);
+   // }
+//}
 
         function renderLogs() {
             const logSection = document.getElementById('log-section');
