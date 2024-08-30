@@ -261,6 +261,7 @@
         let logs = JSON.parse(localStorage.getItem('logs')) || [];
 
         function checkoutTools() {
+            
             const studentId = document.getElementById('student-id').value.trim();
             if (!studentId) {
                 alert('Please enter a valid Student ID.');
@@ -268,10 +269,15 @@
             }
 
             const toolIds = [];
-            for (let i = 1; i <= 6; i++) {
-                const toolInput = document.getElementById('tool-id' + i).value.trim();
-                if (toolInput) toolIds.push(toolInput);
-            }
+    for (let i = 1; i <= 6; i++) {
+        const toolInput = document.getElementById('tool-id' + i).value.trim();
+        if (toolInput) {
+            const randomNum = Math.floor(Math.random() * 900) + 100; // Generate a random 3-digit number
+            const toolIdWithNumber = toolInput + '-' + randomNum; // Append the random number to the tool ID
+            toolIds.push(toolIdWithNumber);
+        }
+    }
+
 
             if (toolIds.length === 0) {
                 alert('Please enter at least one Tool ID.');
