@@ -195,6 +195,8 @@
         #student-tools {
             margin-top: 20px;
         }
+
+    
     </style>
 </head>
 <body>
@@ -259,6 +261,26 @@
     <script>
         let checkoutData = JSON.parse(localStorage.getItem('checkoutData')) || {};
         let logs = JSON.parse(localStorage.getItem('logs')) || [];
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.input-section input');
+    
+    inputs.forEach((input, index) => {
+        input.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default Enter key action (like form submission)
+                
+                const nextIndex = index + 1;
+                if (nextIndex < inputs.length) {
+                    inputs[nextIndex].focus(); // Move focus to the next input
+                }
+            }
+        });
+    });
+});
+
 
         function checkoutTools() {
             
@@ -428,6 +450,8 @@
             renderCheckedOutTools();
             renderLogs();
         };
+
+        
     </script>
 </body>
 </html>
